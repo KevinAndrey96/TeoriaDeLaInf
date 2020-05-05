@@ -39,8 +39,11 @@ y_niveles_binario = convertir_10(y_niveles,pulsos_binarios); #arreglo de binario
 y_niveles
 y_niveles_binario
 
+
+
+aux=1
 aaa=1
-while (aaa==1)
+while (aux<=6)
   #GENERACIÓN DE FORMATOS DE SEÑALIZACIÓN
   disp("Seleccione el tipo de codificación :");
   disp("1-Unipolar NRZ");
@@ -49,8 +52,12 @@ while (aaa==1)
   disp("4-Bipolar RZ");
   disp("5-AMI");
   disp("6-Manchester");
-  opcion=input("ingrese la opción: ");
+  #opcion=input("ingrese la opción: ");
   y=[];
+  opcion=aux
+  aux=aux+1
+  
+  
 
   #Tipos dependiendo de la eleccion
   f_s=100;
@@ -63,7 +70,7 @@ while (aaa==1)
 
   switch (opcion)
     case 1
-      
+      senal="Señal codificada Unipolar NRZ"
       tipo=NRZ;
       for i=1:length(y_niveles_binario)
           switch y_niveles_binario(i)
@@ -74,7 +81,7 @@ while (aaa==1)
           end
       end
     case 2
-      
+      senal="Señal codificada Bipolar NRZ"
       tipo=NRZ;
       for i=1:length(y_niveles_binario)
           switch y_niveles_binario(i)
@@ -85,7 +92,7 @@ while (aaa==1)
           end
       end
     case 3
-      
+      senal="Señal codificada Unipolar RZ"
       tipo=RZ;
       for i=1:length(y_niveles_binario)
           switch y_niveles_binario(i)
@@ -96,7 +103,7 @@ while (aaa==1)
           end
       end
     case 4
-      
+      senal="Señal codificada Bipolar RZ"
       tipo=RZ;
       for i=1:length(y_niveles_binario)
           switch y_niveles_binario(i)
@@ -107,7 +114,7 @@ while (aaa==1)
           end
       end
     case 5
-      
+      senal="Señal codificada AMI"
       tipo=RZ;
       count = 0;
       for i=1:length(y_niveles_binario)
@@ -124,7 +131,7 @@ while (aaa==1)
           end
       end		
     case 6
-      
+      senal="Señal codificada Unipolar Manchester"
       tipo=Man;
       for i=1:length(y_niveles_binario)
           switch y_niveles_binario(i)
@@ -137,19 +144,19 @@ while (aaa==1)
   endswitch
 
   t1=(0:(length(y)-1))/f_s;
-  figure(2);
-  subplot(1,1,1);plot(t1,y,'k');axis([0 100 -1.1 1.1]); title('Señal codificada');xlabel('nT_s'); ylabel('x(nT_s)');
-  #RECUPERACIÓN DE LA SEÑAL (DEMOLUDADOR)
-
-  sum=0;
-  w_m=2*pi*f_m;
-  for i=0:2*T_m
-    
-    fun=F(i*f_s)*(sin(w_m.*(t-i*f_s))/w_m.*(t-i*f_s))
-    sum=sum+fun;
-  endfor
-  figure(3);
-  plot(t,sum); title('Recuperacion de la señal');
+  figure(1+opcion);
+  subplot(1,1,1);plot(t1,y,'k');axis([0 100 -1.1 1.1]); title(senal);xlabel('nT_s'); ylabel('x(nT_s)');
   
-  aaa=input("Desea cálcular otro formato de generalización?\n\n1. Si\n2. No\n\nRta: ");
+  #aaa=input("Desea cálcular otro formato de generalización?\n\n1. Si\n2. No\n\nRta: ");
 endwhile
+#RECUPERACIÓN DE LA SEÑAL (DEMODULADOR)
+
+sum=0;
+w_m=2*pi*f_m;
+for i=-500:2*T_m
+  
+  fun=F(i*f_s)*(sin(w_m.*(t-i*f_s))/w_m.*(t-i*f_s))
+  sum=sum+fun;
+endfor
+figure(aux+1);
+plot(t,sum); title('Recuperación de la señal');
